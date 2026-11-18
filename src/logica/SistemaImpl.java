@@ -1,12 +1,13 @@
 package logica;
 
-import java.io.FileNotFoundException;
+
 import java.util.ArrayList;
 
 import dominio.*;
 
 public class SistemaImpl implements Sistema {
-	ArrayList<Jugador> jugadores = new ArrayList<>();
+	private ArrayList<Jugador> jugadores = new ArrayList<>();
+	private ArrayList<Monstruo> monstruos = new ArrayList<>();
 
 	@Override
 	public boolean agregarJugador(String nombre, String puntajeTexto) {
@@ -29,6 +30,117 @@ public class SistemaImpl implements Sistema {
 	@Override
 	public int cantidadJugadores() {
 		return jugadores.size();
+	}
+
+	@Override
+	public int cantidadMonstruos() {
+		return monstruos.size();
+	}
+
+	@Override
+	public String agregarMonstruo(String[] partes, String linea) {
+		String motivo = "";
+		if (partes.length < 6) {
+			motivo = "Linea invalida por falta o sobra campos: " + linea;
+			return motivo;
+		}
+		
+		String tipo = partes[0].trim();
+		String vidaTexto = partes[1].trim();
+		String velocidadTexto = partes[2].trim();
+		String fuerzaTexto = partes[3].trim();
+		String resistenciaTexto = partes[4].trim();
+		int vida = validarNumeros(vidaTexto, 1, 200);
+		int velocidad = validarNumeros(velocidadTexto, 1, 100);
+		int fuerza = validarNumeros(fuerzaTexto, 1, 100);
+		int resistencia = validarNumeros(resistenciaTexto, 1, 100);
+
+		if (vida == -1 || velocidad == -1 || fuerza == -1 || resistencia == -1) {
+			motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
+			return motivo;
+		}if (tipo.equalsIgnoreCase("zombi")) {
+			if (partes.length != 6) {
+				motivo = "Linea invalida por falta o sobra campos: " + linea;
+				return motivo;
+			}
+
+			String fuerzaMordidaTxt = partes[5];
+			int fuerzaMordida = validarNumeros(fuerzaMordidaTxt, 1, 100);
+
+			if (fuerzaMordida == -1) {
+				motivo = "Linea invalida atributos fuera de rango o invalido" + linea;
+				return motivo;
+			}
+			Zombi z = new Zombi(vida,velocidad, fuerza,resistencia, fuerzaMordida);
+			monstruos.add(z);
+		} else if (tipo.equalsIgnoreCase("vampiro")) {
+			if (partes.length != 7) {
+				motivo = "Linea invalida por falta o sobra campos: " + linea;
+				return motivo;
+			}
+			String velocidadVueloTxt = partes[5];
+			String resistenciaSolTxt = partes[6];
+			int velocidadVuelo = validarNumeros(velocidadVueloTxt, 1, 100);
+			int resistenciaSol = validarNumeros(resistenciaSolTxt, 1, 100);
+
+			if (velocidadVuelo == -1 || resistenciaSol == -1) {
+				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
+				return motivo;
+			}
+			Vampiro v = new Vampiro(vida, velocidad, fuerza, resistencia, velocidadVuelo, resistenciaSol);
+			monstruos.add(v);
+		} else if (tipo.equalsIgnoreCase("momia")) {
+			if (partes.length != 6) {
+				motivo = "Linea invalida por falta o sobra campos: " + linea;
+				return motivo;
+			}
+			String longitudVendajesTxt = partes[5];
+			int longitudVendajes = validarNumeros(longitudVendajesTxt, 1, 300);
+
+			if (longitudVendajes == -1) {
+				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
+				return motivo;
+			}
+			Momia m = new Momia(vida, velocidad, fuerza, resistencia, longitudVendajes);
+			monstruos.add(m);
+		} else if (tipo.equalsIgnoreCase("hombrelobo")) {
+			if (partes.length != 7) {
+				motivo = "Linea invalida por falta o sobra campos: " + linea;
+				return motivo;
+			}
+			String ferocidadTxt = partes[5];
+			String faseLunarTxt = partes[6];
+			int ferocidad = validarNumeros(ferocidadTxt, 1, 100);
+			int faseLunar = validarNumeros(faseLunarTxt, 1, 4);
+
+			if (ferocidad == -1 || faseLunar == -1) {
+				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
+				return motivo;
+			}
+			HombreLobo h = new HombreLobo(vida, velocidad, fuerza, resistencia, ferocidad, faseLunar);
+			monstruos.add(h);
+		} else {
+			motivo = "Linea invalida tipo no reconocido: " + linea;
+			return motivo;
+		}
+	
+		return null;
+		}
+	
+
+	
+	private int validarNumeros(String numeroTxt, int rangoMin, int rangoMax) {
+		int numero = 0;
+		try {
+			numero = Integer.parseInt(numeroTxt);
+			if (numero < rangoMin || numero > rangoMax) {
+				return -1;
+			}
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+		return numero;
+
 	}
 
 }
