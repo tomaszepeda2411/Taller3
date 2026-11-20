@@ -48,4 +48,5 @@ public abstract class Monstruo {
 		return String.format("%-10s", tipo) + " | Vida " + vida + " | Vel " + velocidad + " | Fue " + fuerza + " | Res "
 				+ resistencia;
 	}
+	public abstract double aceptar(VisitorMinijuego visitor);
 }

@@ -65,6 +65,7 @@ public class Main {
 					opcion = Integer.parseInt(teclado.nextLine());
 					switch (opcion) {
 					case 1:
+						jugarMinijuego();
 						break;
 					case 2:
 						verCatalogo();
@@ -89,6 +90,76 @@ public class Main {
 
 		} while (opcion != 6);
 
+	}
+
+	private static void jugarMinijuego() {
+		int opcion = 0;
+		do {
+			opcion = -1;
+
+			System.out.println("------ MINIJUEGOS ------");
+			ArrayList<String> minijuegos = sistema.listarMinijuegos();
+			for (int i = 0; i < minijuegos.size(); i++) {
+				System.out.println((i + 1) + "- " + minijuegos.get(i));
+			}
+			System.out.println("0- Volver");
+			System.out.print("> ");
+			try {
+				opcion = Integer.parseInt(teclado.nextLine());
+			} catch (NumberFormatException e) {
+				System.out.println("[!] Ingrese un numero");
+				continue;
+			}
+			if (opcion == 0) {
+				continue;
+			}
+			
+			int estado = sistema.estadoMinijuego(opcion);
+			if (estado == -1) {
+				System.out.println("[!] Opcion fuera de rango");
+			} else if (estado == -2) {
+				System.out.println("[!] Ya has jugado este minijuego");
+			} else {
+				System.out.println();
+				System.out.println(sistema.nombreMinijuego(opcion) + ": " + sistema.descripcionMinijuego(opcion));
+				elegirMonstruo(opcion);
+			}
+		} while (opcion != 0);
+	}
+
+	private static void elegirMonstruo(int minijuego) {
+		ArrayList<String> lista = sistema.monstruosDisponibles();
+		if(lista.isEmpty()) {
+			System.out.println("[!] No quedan monstruos disponibles");
+			return;
+		}
+		int opcion;
+		do {
+			opcion = -1;
+			
+			System.out.println();
+			System.out.println("Elige el monstruo en el que te convertiras:");
+			for(int i = 0; i<lista.size();i++) {
+				System.out.println((i+1) + ") " + lista.get(i));
+			}
+			System.out.println("0) Volver");
+			System.out.print("> ");
+			try {
+				opcion = Integer.parseInt(teclado.nextLine().trim());
+			}catch (NumberFormatException e) {
+				System.out.println("[!] Ingrese un numero");
+				continue;
+			}
+			if(opcion == 0) {
+				return;
+			}
+			if(opcion <1 || opcion > lista.size()) {
+				System.out.println("[!] Opcion fuera de rango");
+				continue;
+			}
+			System.out.println("Elegiste el monstruo " + opcion);
+			return;
+		}while(true);
 	}
 
 	private static void verCatalogo() {

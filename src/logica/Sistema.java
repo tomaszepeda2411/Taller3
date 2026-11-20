@@ -18,4 +18,14 @@ public interface Sistema {
 	void iniciarSesion(String nombre);
 
 	ArrayList<String> catalogo();
+	
+	ArrayList<String> listarMinijuegos();
+	
+	int estadoMinijuego(int numero);
+	
+	String nombreMinijuego(int numero);
+	
+	String descripcionMinijuego(int numero);
+	
+	ArrayList<String> monstruosDisponibles();
 }

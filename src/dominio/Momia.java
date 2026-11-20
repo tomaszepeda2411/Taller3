@@ -26,4 +26,9 @@ public class Momia extends Monstruo implements Regenerable, Furioso {
 	public String descripcion() {
 		return super.descripcion() + " | Vendajes " + longitudVendajes;
 	}
+
+	@Override
+	public double aceptar(VisitorMinijuego visitor) {
+		return visitor.visitarMomia(this);
+	}
 }

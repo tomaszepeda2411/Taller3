@@ -32,4 +32,9 @@ public class HombreLobo extends Monstruo implements Mordedor, Furioso {
 	public String descripcion() {
 		return super.descripcion() + " | Ferocidad " + ferocidad + " | Fase lunar " + faseLunar;
 	}
+
+	@Override
+	public double aceptar(VisitorMinijuego visitor) {
+		return visitor.visitarHombreLobo(this);
+	}
 }

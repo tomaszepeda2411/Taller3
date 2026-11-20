@@ -7,8 +7,18 @@ import dominio.*;
 public class SistemaImpl implements Sistema {
 	private ArrayList<Jugador> jugadores = new ArrayList<>();
 	private ArrayList<Monstruo> monstruos = new ArrayList<>();
+	private ArrayList<Minijuego> minijuegos = new ArrayList<>();
+	private ArrayList<Monstruo> disponibles = new ArrayList<>();
 	private String jugadorActual;
 	private int puntajeActual;
+	
+
+	public SistemaImpl() {
+		minijuegos.add(new CarreraCementerio());
+		minijuegos.add(new CazaCalabazas());
+		minijuegos.add(new LanzamientoLapidas());
+		minijuegos.add(new SobrevivirAmanecer());
+	}
 
 	@Override
 	public boolean agregarJugador(String nombre, String puntajeTexto) {
@@ -25,7 +35,7 @@ public class SistemaImpl implements Sistema {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-
+		
 		return true;
 	}
 
@@ -64,7 +74,7 @@ public class SistemaImpl implements Sistema {
 				return "Linea invalida por falta o sobra campos: " + linea;
 			}
 
-			String fuerzaMordidaTxt = partes[5];
+			String fuerzaMordidaTxt = partes[5].trim();
 			int fuerzaMordida = validarNumeros(fuerzaMordidaTxt, 1, 100);
 
 			if (fuerzaMordida == -1) {
@@ -76,8 +86,8 @@ public class SistemaImpl implements Sistema {
 			if (partes.length != 7) {
 				return "Linea invalida por falta o sobra campos: " + linea;
 			}
-			String velocidadVueloTxt = partes[5];
-			String resistenciaSolTxt = partes[6];
+			String velocidadVueloTxt = partes[5].trim();
+			String resistenciaSolTxt = partes[6].trim();
 			int velocidadVuelo = validarNumeros(velocidadVueloTxt, 1, 100);
 			int resistenciaSol = validarNumeros(resistenciaSolTxt, 1, 100);
 
@@ -90,7 +100,7 @@ public class SistemaImpl implements Sistema {
 			if (partes.length != 6) {
 				return "Linea invalida por falta o sobra campos: " + linea;
 			}
-			String longitudVendajesTxt = partes[5];
+			String longitudVendajesTxt = partes[5].trim();
 			int longitudVendajes = validarNumeros(longitudVendajesTxt, 1, 300);
 
 			if (longitudVendajes == -1) {
@@ -102,8 +112,8 @@ public class SistemaImpl implements Sistema {
 			if (partes.length != 7) {
 				return "Linea invalida por falta o sobra campos: " + linea;
 			}
-			String ferocidadTxt = partes[5];
-			String faseLunarTxt = partes[6];
+			String ferocidadTxt = partes[5].trim();
+			String faseLunarTxt = partes[6].trim();
 			int ferocidad = validarNumeros(ferocidadTxt, 1, 100);
 			int faseLunar = validarNumeros(faseLunarTxt, 1, 4);
 
@@ -158,6 +168,10 @@ public class SistemaImpl implements Sistema {
 		for (Monstruo m : monstruos) {
 			m.setUsado(false);
 		}
+		for(Minijuego m : minijuegos) {
+			m.setJugado(false);
+			m.setPuntaje(0);
+		}
 
 	}
 
@@ -203,6 +217,59 @@ public class SistemaImpl implements Sistema {
 			lineas.add(linea);
 		}
 		return lineas;
+	}
+
+	@Override
+	public ArrayList<String> listarMinijuegos() {
+			
+			ArrayList<String> minijuegosString = new ArrayList<>();
+			for(Minijuego m : minijuegos) {
+				String linea;
+				boolean estado = m.isJugado();
+				if(!estado) {
+					 linea = String.format("%-25s",m.getNombre()) +  " [DISPONIBLE]";
+				}else {
+				 linea = String.format("%-25s", m.getNombre())+ " [JUGADO - " + m.getPuntaje() + " pts]";
+				}
+				
+				minijuegosString.add(linea);
+			}
+			return minijuegosString;
+	}
+
+	@Override
+	public int estadoMinijuego(int numero) {
+		if(numero < 1 || numero> minijuegos.size()) {
+			return -1;
+		}else if(minijuegos.get(numero-1).isJugado()) {
+			return -2;
+		}
+	
+		return 0;
+		
+	}
+
+	@Override
+	public String nombreMinijuego(int numero) {
+		return minijuegos.get(numero-1).getNombre();
+	}
+
+	@Override
+	public String descripcionMinijuego(int numero) {
+		return minijuegos.get(numero-1).getDescripcion();
+	}
+
+	@Override
+	public ArrayList<String> monstruosDisponibles() {
+		disponibles.clear();
+		ArrayList<String> lineas = new ArrayList<>();
+		for(Monstruo m : monstruos) {
+			if(!m.isUsado()) {
+				disponibles.add(m);
+				lineas.add(m.descripcion());
+			}
+		}
+ 		return lineas;
 	}
 
 }
