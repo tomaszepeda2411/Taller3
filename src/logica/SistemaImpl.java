@@ -1,6 +1,5 @@
 package logica;
 
-
 import java.util.ArrayList;
 
 import dominio.*;
@@ -42,12 +41,11 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public String agregarMonstruo(String[] partes, String linea) {
-		String motivo = "";
 		if (partes.length < 6) {
-			motivo = "Linea invalida por falta o sobra campos: " + linea;
-			return motivo;
+			return "Linea invalida por falta o sobra campos: " + linea;
+
 		}
-		
+
 		String tipo = partes[0].trim();
 		String vidaTexto = partes[1].trim();
 		String velocidadTexto = partes[2].trim();
@@ -59,27 +57,24 @@ public class SistemaImpl implements Sistema {
 		int resistencia = validarNumeros(resistenciaTexto, 1, 100);
 
 		if (vida == -1 || velocidad == -1 || fuerza == -1 || resistencia == -1) {
-			motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
-			return motivo;
-		}if (tipo.equalsIgnoreCase("zombi")) {
+			return "Linea invalida atributos fuera de rango o invalido: " + linea;
+		}
+		if (tipo.equalsIgnoreCase("zombi")) {
 			if (partes.length != 6) {
-				motivo = "Linea invalida por falta o sobra campos: " + linea;
-				return motivo;
+				return "Linea invalida por falta o sobra campos: " + linea;
 			}
 
 			String fuerzaMordidaTxt = partes[5];
 			int fuerzaMordida = validarNumeros(fuerzaMordidaTxt, 1, 100);
 
 			if (fuerzaMordida == -1) {
-				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
-				return motivo;
+				return "Linea invalida atributos fuera de rango o invalido: " + linea;
 			}
-			Zombi z = new Zombi(vida,velocidad, fuerza,resistencia, fuerzaMordida);
+			Zombi z = new Zombi(vida, velocidad, fuerza, resistencia, fuerzaMordida);
 			monstruos.add(z);
 		} else if (tipo.equalsIgnoreCase("vampiro")) {
 			if (partes.length != 7) {
-				motivo = "Linea invalida por falta o sobra campos: " + linea;
-				return motivo;
+				return "Linea invalida por falta o sobra campos: " + linea;
 			}
 			String velocidadVueloTxt = partes[5];
 			String resistenciaSolTxt = partes[6];
@@ -87,29 +82,25 @@ public class SistemaImpl implements Sistema {
 			int resistenciaSol = validarNumeros(resistenciaSolTxt, 1, 100);
 
 			if (velocidadVuelo == -1 || resistenciaSol == -1) {
-				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
-				return motivo;
+				return "Linea invalida atributos fuera de rango o invalido: " + linea;
 			}
 			Vampiro v = new Vampiro(vida, velocidad, fuerza, resistencia, velocidadVuelo, resistenciaSol);
 			monstruos.add(v);
 		} else if (tipo.equalsIgnoreCase("momia")) {
 			if (partes.length != 6) {
-				motivo = "Linea invalida por falta o sobra campos: " + linea;
-				return motivo;
+				return "Linea invalida por falta o sobra campos: " + linea;
 			}
 			String longitudVendajesTxt = partes[5];
 			int longitudVendajes = validarNumeros(longitudVendajesTxt, 1, 300);
 
 			if (longitudVendajes == -1) {
-				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
-				return motivo;
+				return "Linea invalida atributos fuera de rango o invalido: " + linea;
 			}
 			Momia m = new Momia(vida, velocidad, fuerza, resistencia, longitudVendajes);
 			monstruos.add(m);
 		} else if (tipo.equalsIgnoreCase("hombrelobo")) {
 			if (partes.length != 7) {
-				motivo = "Linea invalida por falta o sobra campos: " + linea;
-				return motivo;
+				return "Linea invalida por falta o sobra campos: " + linea;
 			}
 			String ferocidadTxt = partes[5];
 			String faseLunarTxt = partes[6];
@@ -117,21 +108,17 @@ public class SistemaImpl implements Sistema {
 			int faseLunar = validarNumeros(faseLunarTxt, 1, 4);
 
 			if (ferocidad == -1 || faseLunar == -1) {
-				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
-				return motivo;
+				return "Linea invalida atributos fuera de rango o invalido: " + linea;
 			}
 			HombreLobo h = new HombreLobo(vida, velocidad, fuerza, resistencia, ferocidad, faseLunar);
 			monstruos.add(h);
 		} else {
-			motivo = "Linea invalida tipo no reconocido: " + linea;
-			return motivo;
+			return "Linea invalida tipo no reconocido: " + linea;
 		}
-	
-		return null;
-		}
-	
 
-	
+		return null;
+	}
+
 	private int validarNumeros(String numeroTxt, int rangoMin, int rangoMax) {
 		int numero = 0;
 		try {
@@ -148,7 +135,7 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public boolean validarNombre(String nombre) {
-		if(nombre.isBlank() || nombre.contains(";")) {
+		if (nombre.isBlank() || nombre.contains(";")) {
 			return false;
 		}
 		return true;
@@ -157,7 +144,7 @@ public class SistemaImpl implements Sistema {
 	@Override
 	public int obtenerPuntaje(String nombre) {
 		for (Jugador j : jugadores) {
-			if(j.getNombre().equalsIgnoreCase(nombre)) {
+			if (j.getNombre().equalsIgnoreCase(nombre)) {
 				return j.getPuntaje();
 			}
 		}
@@ -166,50 +153,50 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public void iniciarSesion(String nombre) {
-		 jugadorActual = nombre;
-		 puntajeActual = 0;
-		 for(Monstruo m : monstruos) {
-			 m.setUsado(false);
-		 }
-		
+		jugadorActual = nombre;
+		puntajeActual = 0;
+		for (Monstruo m : monstruos) {
+			m.setUsado(false);
+		}
+
 	}
 
 	@Override
 	public ArrayList<String> catalogo() {
 		ArrayList<String> lineas = new ArrayList<>();
-		for(Monstruo m : monstruos) {
+		for (Monstruo m : monstruos) {
 			String linea = m.descripcion();
-			
+
 			String habilidades = "";
-			
-			if(m instanceof Mordedor) {
-				if(!habilidades.isEmpty()) {
+
+			if (m instanceof Mordedor) {
+				if (!habilidades.isEmpty()) {
 					habilidades += ", ";
 				}
-				habilidades +="Morder";
+				habilidades += "Morder";
 			}
-			if(m instanceof Volador) {
-				if(!habilidades.isEmpty()) {
+			if (m instanceof Volador) {
+				if (!habilidades.isEmpty()) {
 					habilidades += ", ";
 				}
-				habilidades +="Volar";
+				habilidades += "Volar";
 			}
-			if(m instanceof Regenerable) {
-				if(!habilidades.isEmpty()) {
+			if (m instanceof Regenerable) {
+				if (!habilidades.isEmpty()) {
 					habilidades += ", ";
 				}
-				habilidades +="Regenerarse";
+				habilidades += "Regenerarse";
 			}
-			if(m instanceof Furioso) {
-				if(!habilidades.isEmpty()) {
+			if (m instanceof Furioso) {
+				if (!habilidades.isEmpty()) {
 					habilidades += ", ";
 				}
-				habilidades +="Enfurecerse";
+				habilidades += "Enfurecerse";
 			}
 			String estado = "";
-			if(m.isUsado()) {
+			if (m.isUsado()) {
 				estado = "[USADO]";
-			}else {
+			} else {
 				estado = "[DISPONIBLE]";
 			}
 			linea += " | Habilidades: " + habilidades + " | " + estado;

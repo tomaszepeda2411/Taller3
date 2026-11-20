@@ -1,6 +1,6 @@
 package dominio;
 
-public class HombreLobo extends Monstruo implements Mordedor,Furioso {
+public class HombreLobo extends Monstruo implements Mordedor, Furioso {
 	private int ferocidad;
 	private int faseLunar;
 
@@ -12,7 +12,7 @@ public class HombreLobo extends Monstruo implements Mordedor,Furioso {
 
 	@Override
 	public String morder() {
-		return "Te comes una pata de oveja que tenáas guardada...";
+		return "Te comes una pata de oveja que tenías guardada...";
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class HombreLobo extends Monstruo implements Mordedor,Furioso {
 	public int getFaseLunar() {
 		return faseLunar;
 	}
-	
+
 	@Override
 	public String descripcion() {
 		return super.descripcion() + " | Ferocidad " + ferocidad + " | Fase lunar " + faseLunar;

@@ -60,15 +60,10 @@ public class Main {
 				System.out.println("5) Terminar sesión");
 				System.out.println("6) Salir");
 				System.out.print("> ");
-				opcion = -1; // se usa este valor para evitar el doble mensaje por el catch y el default y
-								// por si queda guardada de una opcion anterior
+				opcion = 0;
 				try {
 					opcion = Integer.parseInt(teclado.nextLine());
 					switch (opcion) {
-					case -1:
-						System.out.println("[!] Ingrese un numero valido");
-						// para completar el evite del doble mensaje
-						break;
 					case 1:
 						break;
 					case 2:
@@ -99,8 +94,8 @@ public class Main {
 	private static void verCatalogo() {
 		ArrayList<String> lineas = sistema.catalogo();
 		System.out.println("----- CATÁLOGO DE MONSTRUOS -----");
-		for(int i = 0; i<lineas.size(); i++) {
-			System.out.println( ( i + 1) + "- " + lineas.get(i));
+		for (int i = 0; i < lineas.size(); i++) {
+			System.out.println((i + 1) + "- " + lineas.get(i));
 		}
 	}
 

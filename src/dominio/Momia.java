@@ -1,6 +1,6 @@
 package dominio;
 
-public class Momia extends Monstruo implements Regenerable,Furioso {
+public class Momia extends Monstruo implements Regenerable, Furioso {
 	private int longitudVendajes;
 
 	public Momia(int vida, int velocidad, int fuerza, int resistencia, int longitudVendajes) {
@@ -21,7 +21,7 @@ public class Momia extends Monstruo implements Regenerable,Furioso {
 	public int getLongitudVendajes() {
 		return longitudVendajes;
 	}
-	
+
 	@Override
 	public String descripcion() {
 		return super.descripcion() + " | Vendajes " + longitudVendajes;

@@ -1,6 +1,6 @@
 package dominio;
 
-public class Zombi extends Monstruo implements Mordedor,Regenerable {
+public class Zombi extends Monstruo implements Mordedor, Regenerable {
 
 	private int fuerzaMordida;
 
@@ -22,7 +22,7 @@ public class Zombi extends Monstruo implements Mordedor,Regenerable {
 	public int getFuerzaMordida() {
 		return fuerzaMordida;
 	}
-	
+
 	@Override
 	public String descripcion() {
 		return super.descripcion() + " | Mordida " + fuerzaMordida;

@@ -28,7 +28,7 @@ public class Vampiro extends Monstruo implements Mordedor, Volador {
 	public int getResistenciaSol() {
 		return resistenciaSol;
 	}
-	
+
 	@Override
 	public String descripcion() {
 		return super.descripcion() + " | Vuelo " + velocidadVuelo + " | Res Sol " + resistenciaSol;
