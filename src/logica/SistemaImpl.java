@@ -8,9 +8,12 @@ import dominio.*;
 public class SistemaImpl implements Sistema {
 	private ArrayList<Jugador> jugadores = new ArrayList<>();
 	private ArrayList<Monstruo> monstruos = new ArrayList<>();
+	private String jugadorActual;
+	private int puntajeActual;
 
 	@Override
 	public boolean agregarJugador(String nombre, String puntajeTexto) {
+		nombre = nombre.trim();
 		if (nombre.isEmpty() || puntajeTexto.isEmpty())
 			return false;
 
@@ -68,7 +71,7 @@ public class SistemaImpl implements Sistema {
 			int fuerzaMordida = validarNumeros(fuerzaMordidaTxt, 1, 100);
 
 			if (fuerzaMordida == -1) {
-				motivo = "Linea invalida atributos fuera de rango o invalido" + linea;
+				motivo = "Linea invalida atributos fuera de rango o invalido: " + linea;
 				return motivo;
 			}
 			Zombi z = new Zombi(vida,velocidad, fuerza,resistencia, fuerzaMordida);
@@ -152,13 +155,67 @@ public class SistemaImpl implements Sistema {
 	}
 
 	@Override
-	public int jugadorExiste(String nombre) {
+	public int obtenerPuntaje(String nombre) {
 		for (Jugador j : jugadores) {
 			if(j.getNombre().equalsIgnoreCase(nombre)) {
 				return j.getPuntaje();
 			}
 		}
 		return -1;
+	}
+
+	@Override
+	public void iniciarSesion(String nombre) {
+		 jugadorActual = nombre;
+		 puntajeActual = 0;
+		 for(Monstruo m : monstruos) {
+			 m.setUsado(false);
+		 }
+		
+	}
+
+	@Override
+	public ArrayList<String> catalogo() {
+		ArrayList<String> lineas = new ArrayList<>();
+		for(Monstruo m : monstruos) {
+			String linea = m.descripcion();
+			
+			String habilidades = "";
+			
+			if(m instanceof Mordedor) {
+				if(!habilidades.isEmpty()) {
+					habilidades += ", ";
+				}
+				habilidades +="Morder";
+			}
+			if(m instanceof Volador) {
+				if(!habilidades.isEmpty()) {
+					habilidades += ", ";
+				}
+				habilidades +="Volar";
+			}
+			if(m instanceof Regenerable) {
+				if(!habilidades.isEmpty()) {
+					habilidades += ", ";
+				}
+				habilidades +="Regenerarse";
+			}
+			if(m instanceof Furioso) {
+				if(!habilidades.isEmpty()) {
+					habilidades += ", ";
+				}
+				habilidades +="Enfurecerse";
+			}
+			String estado = "";
+			if(m.isUsado()) {
+				estado = "[USADO]";
+			}else {
+				estado = "[DISPONIBLE]";
+			}
+			linea += " | Habilidades: " + habilidades + " | " + estado;
+			lineas.add(linea);
+		}
+		return lineas;
 	}
 
 }
