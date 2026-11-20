@@ -7,16 +7,75 @@ import java.util.Scanner;
 public class Main {
 
 	static Scanner scan;
+	static Scanner teclado = new Scanner(System.in);
 	static Sistema sistema = new SistemaImpl();
 
 	public static void main(String[] args) {
 		System.out.println("Cargando archivos...");
+
 		leerMonstruos();
+
 		if (sistema.cantidadMonstruos() == 0) {
 			System.out.println("No se ha encontrado el archivo Monstruos.txt o no tiene monstruos validos");
 			return;
 		}
 		leerRegistros();
+		System.out.println("=========================================");
+		System.out.println("             SPOOKY SEASON             ");
+		System.out.println("=========================================");
+		menu();
+	}
+
+	private static void menu() {
+		int opcion = 0;
+		String nombre;
+		boolean valido;
+		do {
+			do {
+				System.out.print("Ingrese su nombre de usuario: ");
+				nombre = teclado.nextLine().trim();
+				valido = sistema.validarNombre(nombre);
+
+				if (!valido) {
+					System.out.println("[!] El nombre no puede estar vacio ni contener ';'.");
+				}
+			} while (!valido);
+
+			int puntaje = sistema.jugadorExiste(nombre);
+			if (puntaje < 0) {
+				System.out.println("Bienvenido " + nombre + " es tu primera vez jugando.");
+			} else {
+				System.out.println("Bienvenido de vuelta, " + nombre + "! Tu récord es de: " + puntaje + " puntos.");
+			}
+			do {
+
+				System.out.println();
+				System.out.println("----- MENÚ PRINCIPAL (" + nombre + ") -----");
+				System.out.println("1) Jugar un minijuego");
+				System.out.println("2) Ver catálogo de monstruos");
+				System.out.println("3) Ver historial de la sesión");
+				System.out.println("4) Ver ranking de jugadores");
+				System.out.println("5) Terminar sesión");
+				System.out.println("6) Salir");
+				System.out.print("> ");
+				opcion = 0; // se reinicia opcion, por si queda guardada de una opcion anterior
+				try {
+				opcion = Integer.parseInt(teclado.nextLine());
+				}catch (NumberFormatException e) {
+					System.out.println("[!] Debe ingresar un número. Intente nuevamente.");
+					
+				}
+				switch (opcion) {
+				case 5:
+					break;
+				case 6:
+					break;
+				default:
+					System.out.println("[!] Ingrese un numero valido");
+				}
+			} while (opcion != 5 && opcion !=6);
+
+		} while (opcion != 6);
 
 	}
 
@@ -45,8 +104,7 @@ public class Main {
 
 			}
 			num = sistema.cantidadJugadores();
-			
-			
+
 		} catch (FileNotFoundException e) {
 
 		} finally {
@@ -54,7 +112,8 @@ public class Main {
 
 				scan.close();
 			}
-		}System.out.println("> " + num + " jugadores cargados desde Registros.txt");
+		}
+		System.out.println("> " + num + " jugadores cargados desde Registros.txt");
 
 	}
 

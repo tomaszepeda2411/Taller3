@@ -143,4 +143,22 @@ public class SistemaImpl implements Sistema {
 
 	}
 
+	@Override
+	public boolean validarNombre(String nombre) {
+		if(nombre.isBlank() || nombre.contains(";")) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int jugadorExiste(String nombre) {
+		for (Jugador j : jugadores) {
+			if(j.getNombre().equalsIgnoreCase(nombre)) {
+				return j.getPuntaje();
+			}
+		}
+		return -1;
+	}
+
 }
