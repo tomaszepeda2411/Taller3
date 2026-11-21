@@ -71,8 +71,10 @@ public class Main {
 						verCatalogo();
 						break;
 					case 3:
+						verHistorial();
 						break;
 					case 4:
+						verRanking();
 						break;
 					case 5:
 						break;
@@ -90,6 +92,30 @@ public class Main {
 
 		} while (opcion != 6);
 
+	}
+
+	private static void verRanking() {
+		ArrayList<String> lineas = sistema.ranking();
+		System.out.println("-----RANKING-----");
+		if(lineas.isEmpty()) {
+			System.out.println("Aun no hay jugadores registrados.");
+		}
+		for(String linea: lineas) {
+			System.out.println(linea);
+		}
+		
+	}
+
+	private static void verHistorial() {
+		ArrayList<String> lineas = sistema.historial();
+		System.out.println("-----HISTORIAL DE LA SESION-----");
+		if (lineas.size() == 1) {
+			System.out.println("Aun no has jugado ningun minijuego.");
+		}
+		for(String linea : lineas) {
+			System.out.println(linea);
+		}
+		
 	}
 
 	private static void jugarMinijuego() {
@@ -123,8 +149,43 @@ public class Main {
 				System.out.println();
 				System.out.println(sistema.nombreMinijuego(opcion) + ": " + sistema.descripcionMinijuego(opcion));
 				elegirMonstruo(opcion);
+	
+				
 			}
 		} while (opcion != 0);
+	}
+
+	private static String elegirHabilidad(int monstruo) {
+		ArrayList<String> habilidades = sistema.habilidades(monstruo);
+		int opcion;
+		do {
+			opcion = -1;
+			
+			System.out.println();
+			System.out.println("¿Quieres usar una habilidad?");
+			for(int i=0; i<habilidades.size();i++) {
+				System.out.println((i + 1) + ") " + habilidades.get(i));
+			}
+			System.out.println("0) No usar habilidad");
+			System.out.print("> ");
+			
+			try {
+				opcion = Integer.parseInt(teclado.nextLine());
+			}catch (NumberFormatException e) {
+				 System.out.println("[!] Ingrese un numero");
+		            continue;
+			}
+			if(opcion == 0) {
+				return "Ninguna";
+			}
+			if(opcion<1 || opcion > habilidades.size()) {
+				System.out.println("[!] Opcion fuera de rango");
+	            continue;
+			}
+			String elegida = habilidades.get(opcion-1);
+			System.out.println(sistema.usarHabilidades(monstruo, elegida));
+			return elegida;
+		}while(true);
 	}
 
 	private static void elegirMonstruo(int minijuego) {
@@ -157,7 +218,21 @@ public class Main {
 				System.out.println("[!] Opcion fuera de rango");
 				continue;
 			}
-			System.out.println("Elegiste el monstruo " + opcion);
+			double potencial = sistema.calcularPotencial(minijuego, opcion);
+			System.out.println();
+			System.out.println("Te transformas en el monstruo elegido...");
+			System.out.println("Potencial: " + String.format("%.2f", potencial));
+			String habilidad = elegirHabilidad(opcion);
+			int puntaje = sistema.jugar(minijuego, opcion, habilidad);
+			if(!habilidad.equals("Ninguna")) {
+				if(sistema.HabilidadEfectiva()) {
+					System.out.println("¡La habilidad fue efectiva! Puntaje x1.5");
+				} else {
+					System.out.println("La habilidad no tuvo efecto en este minijuego.");
+				}
+			}
+			System.out.println();
+			System.out.println(">> Puntaje obtenido: " + puntaje + " puntos");
 			return;
 		}while(true);
 	}

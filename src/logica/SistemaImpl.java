@@ -1,6 +1,7 @@
 package logica;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import dominio.*;
 
@@ -9,6 +10,8 @@ public class SistemaImpl implements Sistema {
 	private ArrayList<Monstruo> monstruos = new ArrayList<>();
 	private ArrayList<Minijuego> minijuegos = new ArrayList<>();
 	private ArrayList<Monstruo> disponibles = new ArrayList<>();
+	private boolean ultimaEfectiva;
+	private LinkedList<Partida> historial = new LinkedList<>();
 	private String jugadorActual;
 	private int puntajeActual;
 	
@@ -172,7 +175,7 @@ public class SistemaImpl implements Sistema {
 			m.setJugado(false);
 			m.setPuntaje(0);
 		}
-
+		historial.clear();
 	}
 
 	@Override
@@ -270,6 +273,122 @@ public class SistemaImpl implements Sistema {
 			}
 		}
  		return lineas;
+	}
+
+	@Override
+	public double calcularPotencial(int minijuego, int monstruo) {
+		Monstruo m = disponibles.get(monstruo-1);
+		Minijuego mj = minijuegos.get(minijuego-1);
+		return m.aceptar(mj);
+	}
+
+	@Override
+	public ArrayList<String> habilidades(int monstruo) {
+		Monstruo m = disponibles.get(monstruo-1);
+		ArrayList<String> listaHabilidades = new ArrayList<>();
+		if(m instanceof Mordedor) {
+			listaHabilidades.add("Morder");
+		}
+		if(m instanceof Volador) {
+			listaHabilidades.add("Volar");
+		}
+		if(m instanceof Regenerable) {
+			listaHabilidades.add("Regenerarse");
+		}
+		if(m instanceof Furioso) {
+			listaHabilidades.add("Enfurecerse");
+		}
+		return listaHabilidades;
+	}
+
+	@Override
+	public String usarHabilidades(int monstruo, String habilidad) {
+		Monstruo m = disponibles.get(monstruo-1);
+		if(habilidad.equalsIgnoreCase("Morder")) {
+			return ((Mordedor)m).morder();
+		}
+		if(habilidad.equalsIgnoreCase("Volar")) {
+			return ((Volador)m).volar();
+		}
+		if(habilidad.equalsIgnoreCase("Regenerarse")) {
+			return ((Regenerable)m).regenerarse();
+		}
+		else{
+			return ((Furioso)m).enfurecerse();
+		}
+		
+	}
+
+	@Override
+	public int jugar(int minijuego, int monstruo, String habilidad) {
+		Monstruo m = disponibles.get(monstruo-1);
+		Minijuego mj = minijuegos.get(minijuego-1);
+		
+		double potencial = m.aceptar(mj);
+		
+		// traducir el nombre del menú al nombre de la interfaz
+	    String interfaz = "Ninguna";
+	    if (habilidad.equals("Morder")) {
+	        interfaz = "Mordedor";
+	    } else if (habilidad.equals("Volar")) {
+	        interfaz = "Volador";
+	    } else if (habilidad.equals("Regenerarse")) {
+	        interfaz = "Regenerable";
+	    } else if (habilidad.equals("Enfurecerse")) {
+	        interfaz = "Furioso";
+	    }
+	    ultimaEfectiva = mj.getHabilidadPremiada().equalsIgnoreCase(interfaz);
+	    double multiplicador = 1.0;
+	    if(ultimaEfectiva) {
+	    	multiplicador = 1.5;
+	    }
+	    
+	    int puntaje = (int) Math.round(potencial * 10 * multiplicador);
+	    
+	    m.setUsado(true);
+	    mj.setJugado(true);
+	    mj.setPuntaje(puntaje);
+	    puntajeActual += puntaje;
+	    historial.add(new Partida(mj.getNombre(), m.getTipo(), habilidad,puntaje));
+		return puntaje;
+	}
+
+	@Override
+	public boolean HabilidadEfectiva() {
+		return ultimaEfectiva;
+	}
+
+	@Override
+	public ArrayList<String> historial() {
+		ArrayList<String> lineas = new ArrayList<>();
+		int i = 1;
+		for(Partida p : historial) {
+			lineas.add(i+ ". " + p.getMinijuego() + " | " + p.getMonstruo() 
+			+ " | Habilidad: " + p.getHabilidad() + " | " + p.getPuntaje() + " pts");
+			i++;
+		}
+		lineas.add("Puntaje acumulado: " + puntajeActual + " pts");
+		return lineas;
+	}
+
+	@Override
+	public ArrayList<String> ranking() {
+		ArrayList<Jugador> copia = new ArrayList<> (jugadores);
+		
+		for(int i = 0; i<copia.size() - 1 ; i++) {
+			for(int j = 0; j<copia.size() -1-i;j++) {
+				if(copia.get(j).getPuntaje() < copia.get(j+1).getPuntaje()) {
+					Jugador temp = copia.get(j);
+					copia.set(j, copia.get(j+1));
+					copia.set(j+1, temp);
+				}
+			}
+		}
+		ArrayList<String> lineas = new ArrayList<>();
+		for(int i = 0; i<copia.size();i++) {
+			lineas.add((i + 1) + ". " + String.format("%-15s", copia.get(i).getNombre()) + copia.get(i).getPuntaje());
+		}
+		return lineas;
 	}
 
 }

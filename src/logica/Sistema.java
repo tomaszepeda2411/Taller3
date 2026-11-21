@@ -28,4 +28,18 @@ public interface Sistema {
 	String descripcionMinijuego(int numero);
 	
 	ArrayList<String> monstruosDisponibles();
+	
+	double calcularPotencial(int minijuego, int monstruo);
+	
+	ArrayList<String> habilidades(int monstruo);
+	
+	String usarHabilidades(int monstruo, String habilidad);
+	
+	int jugar(int minijuego, int monstruo,String habilidad);
+	
+	boolean HabilidadEfectiva();
+	
+	ArrayList<String> historial();
+	
+	ArrayList<String> ranking();
 }
