@@ -391,4 +391,32 @@ public class SistemaImpl implements Sistema {
 		return lineas;
 	}
 
+	@Override
+	public String terminarSesion() {
+		if(historial.isEmpty()) {
+			return "No jugaste ningun minijuego, no se guardo registro.";
+		}
+		for (Jugador j : jugadores) {
+			if(j.getNombre().equalsIgnoreCase(jugadorActual)) {
+				if(puntajeActual > j.getPuntaje()) {
+					int anterior = j.getPuntaje();
+					j.setPuntaje(puntajeActual);
+					return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. Superaste tu record (" + anterior + ")!.";
+				}
+				return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. No superaste tu record (" + j.getPuntaje() + ").";
+			}
+		}
+		jugadores.add(new Jugador(jugadorActual, puntajeActual));
+		return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. Nuevo jugador registrado.";
+	}
+
+	@Override
+	public ArrayList<String> lineasRegistros() {
+		ArrayList<String> lineas = new ArrayList<>();
+		for(Jugador j : jugadores) {
+			lineas.add(j.getNombre() + ";" + j.getPuntaje());
+		}
+		return lineas;
+	}
+
 }

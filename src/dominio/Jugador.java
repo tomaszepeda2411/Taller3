@@ -14,6 +14,9 @@ public class Jugador {
 	public int getPuntaje() {
 		return puntaje;
 	}
+	public void setPuntaje(int puntaje) {
+		this.puntaje = puntaje;
+	}
 	
 	
 }

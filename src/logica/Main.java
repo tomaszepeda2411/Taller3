@@ -2,6 +2,8 @@ package logica;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -77,8 +79,10 @@ public class Main {
 						verRanking();
 						break;
 					case 5:
+						terminarSesion();
 						break;
 					case 6:
+						terminarSesion();
 						break;
 					default:
 						System.out.println("[!] Ingrese un numero valido");
@@ -92,6 +96,19 @@ public class Main {
 
 		} while (opcion != 6);
 
+	}
+
+	private static void terminarSesion() {
+		String mensaje = sistema.terminarSesion();
+		System.out.println(mensaje);
+		try(FileWriter fw = new FileWriter("Registros.txt")){
+			for(String linea: sistema.lineasRegistros()) {
+				fw.write(linea + "\n");
+			}
+			System.out.println("Registros guardados en Registros.txt");
+		}catch (IOException e) {
+			System.out.println("[i] No se pudo guardar en Registros.txt");
+		}
 	}
 
 	private static void verRanking() {

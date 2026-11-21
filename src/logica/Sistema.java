@@ -42,4 +42,8 @@ public interface Sistema {
 	ArrayList<String> historial();
 	
 	ArrayList<String> ranking();
+	
+	String terminarSesion();
+	
+	ArrayList<String> lineasRegistros();
 }
