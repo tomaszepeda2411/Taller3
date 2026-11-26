@@ -14,7 +14,6 @@ public class SistemaImpl implements Sistema {
 	private LinkedList<Partida> historial = new LinkedList<>();
 	private String jugadorActual;
 	private int puntajeActual;
-	
 
 	public SistemaImpl() {
 		minijuegos.add(new CarreraCementerio());
@@ -38,7 +37,7 @@ public class SistemaImpl implements Sistema {
 		} catch (NumberFormatException e) {
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -171,7 +170,7 @@ public class SistemaImpl implements Sistema {
 		for (Monstruo m : monstruos) {
 			m.setUsado(false);
 		}
-		for(Minijuego m : minijuegos) {
+		for (Minijuego m : minijuegos) {
 			m.setJugado(false);
 			m.setPuntaje(0);
 		}
@@ -224,78 +223,78 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public ArrayList<String> listarMinijuegos() {
-			
-			ArrayList<String> minijuegosString = new ArrayList<>();
-			for(Minijuego m : minijuegos) {
-				String linea;
-				boolean estado = m.isJugado();
-				if(!estado) {
-					 linea = String.format("%-25s",m.getNombre()) +  " [DISPONIBLE]";
-				}else {
-				 linea = String.format("%-25s", m.getNombre())+ " [JUGADO - " + m.getPuntaje() + " pts]";
-				}
-				
-				minijuegosString.add(linea);
+
+		ArrayList<String> minijuegosString = new ArrayList<>();
+		for (Minijuego m : minijuegos) {
+			String linea;
+			boolean estado = m.isJugado();
+			if (!estado) {
+				linea = String.format("%-25s", m.getNombre()) + " [DISPONIBLE]";
+			} else {
+				linea = String.format("%-25s", m.getNombre()) + " [JUGADO - " + m.getPuntaje() + " pts]";
 			}
-			return minijuegosString;
+
+			minijuegosString.add(linea);
+		}
+		return minijuegosString;
 	}
 
 	@Override
 	public int estadoMinijuego(int numero) {
-		if(numero < 1 || numero> minijuegos.size()) {
+		if (numero < 1 || numero > minijuegos.size()) {
 			return -1;
-		}else if(minijuegos.get(numero-1).isJugado()) {
+		} else if (minijuegos.get(numero - 1).isJugado()) {
 			return -2;
 		}
-	
+
 		return 0;
-		
+
 	}
 
 	@Override
 	public String nombreMinijuego(int numero) {
-		return minijuegos.get(numero-1).getNombre();
+		return minijuegos.get(numero - 1).getNombre();
 	}
 
 	@Override
 	public String descripcionMinijuego(int numero) {
-		return minijuegos.get(numero-1).getDescripcion();
+		return minijuegos.get(numero - 1).getDescripcion();
 	}
 
 	@Override
 	public ArrayList<String> monstruosDisponibles() {
 		disponibles.clear();
 		ArrayList<String> lineas = new ArrayList<>();
-		for(Monstruo m : monstruos) {
-			if(!m.isUsado()) {
+		for (Monstruo m : monstruos) {
+			if (!m.isUsado()) {
 				disponibles.add(m);
 				lineas.add(m.descripcion());
 			}
 		}
- 		return lineas;
+		return lineas;
 	}
 
 	@Override
 	public double calcularPotencial(int minijuego, int monstruo) {
-		Monstruo m = disponibles.get(monstruo-1);
-		Minijuego mj = minijuegos.get(minijuego-1);
+		Monstruo m = disponibles.get(monstruo - 1);
+		Minijuego mj = minijuegos.get(minijuego - 1);
 		return m.aceptar(mj);
 	}
 
 	@Override
 	public ArrayList<String> habilidades(int monstruo) {
-		Monstruo m = disponibles.get(monstruo-1);
+		Monstruo m = disponibles.get(monstruo - 1);
 		ArrayList<String> listaHabilidades = new ArrayList<>();
-		if(m instanceof Mordedor) {
+		if (m instanceof Mordedor) {
 			listaHabilidades.add("Morder");
 		}
-		if(m instanceof Volador) {
+		if (m instanceof Volador) {
 			listaHabilidades.add("Volar");
 		}
-		if(m instanceof Regenerable) {
+		if (m instanceof Regenerable) {
 			listaHabilidades.add("Regenerarse");
 		}
-		if(m instanceof Furioso) {
+		if (m instanceof Furioso) {
 			listaHabilidades.add("Enfurecerse");
 		}
 		return listaHabilidades;
@@ -303,53 +302,52 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public String usarHabilidades(int monstruo, String habilidad) {
-		Monstruo m = disponibles.get(monstruo-1);
-		if(habilidad.equalsIgnoreCase("Morder")) {
-			return ((Mordedor)m).morder();
+		Monstruo m = disponibles.get(monstruo - 1);
+		if (habilidad.equalsIgnoreCase("Morder")) {
+			return ((Mordedor) m).morder();
 		}
-		if(habilidad.equalsIgnoreCase("Volar")) {
-			return ((Volador)m).volar();
+		if (habilidad.equalsIgnoreCase("Volar")) {
+			return ((Volador) m).volar();
 		}
-		if(habilidad.equalsIgnoreCase("Regenerarse")) {
-			return ((Regenerable)m).regenerarse();
+		if (habilidad.equalsIgnoreCase("Regenerarse")) {
+			return ((Regenerable) m).regenerarse();
+		} else {
+			return ((Furioso) m).enfurecerse();
 		}
-		else{
-			return ((Furioso)m).enfurecerse();
-		}
-		
+
 	}
 
 	@Override
 	public int jugar(int minijuego, int monstruo, String habilidad) {
-		Monstruo m = disponibles.get(monstruo-1);
-		Minijuego mj = minijuegos.get(minijuego-1);
-		
+		Monstruo m = disponibles.get(monstruo - 1);
+		Minijuego mj = minijuegos.get(minijuego - 1);
+
 		double potencial = m.aceptar(mj);
-		
+
 		// traducir el nombre del menú al nombre de la interfaz
-	    String interfaz = "Ninguna";
-	    if (habilidad.equals("Morder")) {
-	        interfaz = "Mordedor";
-	    } else if (habilidad.equals("Volar")) {
-	        interfaz = "Volador";
-	    } else if (habilidad.equals("Regenerarse")) {
-	        interfaz = "Regenerable";
-	    } else if (habilidad.equals("Enfurecerse")) {
-	        interfaz = "Furioso";
-	    }
-	    ultimaEfectiva = mj.getHabilidadPremiada().equalsIgnoreCase(interfaz);
-	    double multiplicador = 1.0;
-	    if(ultimaEfectiva) {
-	    	multiplicador = 1.5;
-	    }
-	    
-	    int puntaje = (int) Math.round(potencial * 10 * multiplicador);
-	    
-	    m.setUsado(true);
-	    mj.setJugado(true);
-	    mj.setPuntaje(puntaje);
-	    puntajeActual += puntaje;
-	    historial.add(new Partida(mj.getNombre(), m.getTipo(), habilidad,puntaje));
+		String interfaz = "Ninguna";
+		if (habilidad.equals("Morder")) {
+			interfaz = "Mordedor";
+		} else if (habilidad.equals("Volar")) {
+			interfaz = "Volador";
+		} else if (habilidad.equals("Regenerarse")) {
+			interfaz = "Regenerable";
+		} else if (habilidad.equals("Enfurecerse")) {
+			interfaz = "Furioso";
+		}
+		ultimaEfectiva = mj.getHabilidadPremiada().equalsIgnoreCase(interfaz);
+		double multiplicador = 1.0;
+		if (ultimaEfectiva) {
+			multiplicador = 1.5;
+		}
+
+		int puntaje = (int) Math.round(potencial * 10 * multiplicador);
+
+		m.setUsado(true);
+		mj.setJugado(true);
+		mj.setPuntaje(puntaje);
+		puntajeActual += puntaje;
+		historial.add(new Partida(mj.getNombre(), m.getTipo(), habilidad, puntaje));
 		return puntaje;
 	}
 
@@ -362,9 +360,9 @@ public class SistemaImpl implements Sistema {
 	public ArrayList<String> historial() {
 		ArrayList<String> lineas = new ArrayList<>();
 		int i = 1;
-		for(Partida p : historial) {
-			lineas.add(i+ ". " + p.getMinijuego() + " | " + p.getMonstruo() 
-			+ " | Habilidad: " + p.getHabilidad() + " | " + p.getPuntaje() + " pts");
+		for (Partida p : historial) {
+			lineas.add(i + ". " + p.getMinijuego() + " | " + p.getMonstruo() + " | Habilidad: " + p.getHabilidad()
+					+ " | " + p.getPuntaje() + " pts");
 			i++;
 		}
 		lineas.add("Puntaje acumulado: " + puntajeActual + " pts");
@@ -373,19 +371,23 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public ArrayList<String> ranking() {
-		ArrayList<Jugador> copia = new ArrayList<> (jugadores);
+		ArrayList<Jugador> copia = new ArrayList<>(jugadores);
 		
-		for(int i = 0; i<copia.size() - 1 ; i++) {
-			for(int j = 0; j<copia.size() -1-i;j++) {
-				if(copia.get(j).getPuntaje() < copia.get(j+1).getPuntaje()) {
+		for (int i = 0; i < copia.size() - 1; i++) {
+			for (int j = 0; j < copia.size() - 1 - i; j++) {
+				boolean empate = false;
+				if(copia.get(j).getPuntaje() == copia.get(j+1).getPuntaje()) {
+					empate = true;
+				}
+				if (copia.get(j).getPuntaje() < copia.get(j + 1).getPuntaje() || empate && copia.get(j).getNombre().compareToIgnoreCase(copia.get(j+1).getNombre()) > 0) {
 					Jugador temp = copia.get(j);
-					copia.set(j, copia.get(j+1));
-					copia.set(j+1, temp);
+					copia.set(j, copia.get(j + 1));
+					copia.set(j + 1, temp);
 				}
 			}
 		}
 		ArrayList<String> lineas = new ArrayList<>();
-		for(int i = 0; i<copia.size();i++) {
+		for (int i = 0; i < copia.size(); i++) {
 			lineas.add((i + 1) + ". " + String.format("%-15s", copia.get(i).getNombre()) + copia.get(i).getPuntaje());
 		}
 		return lineas;
@@ -393,17 +395,19 @@ public class SistemaImpl implements Sistema {
 
 	@Override
 	public String terminarSesion() {
-		if(historial.isEmpty()) {
+		if (historial.isEmpty()) {
 			return "No jugaste ningun minijuego, no se guardo registro.";
 		}
 		for (Jugador j : jugadores) {
-			if(j.getNombre().equalsIgnoreCase(jugadorActual)) {
-				if(puntajeActual > j.getPuntaje()) {
+			if (j.getNombre().equalsIgnoreCase(jugadorActual)) {
+				if (puntajeActual > j.getPuntaje()) {
 					int anterior = j.getPuntaje();
 					j.setPuntaje(puntajeActual);
-					return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. Superaste tu record (" + anterior + ")!.";
+					return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. Superaste tu record ("
+							+ anterior + ")!.";
 				}
-				return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. No superaste tu record (" + j.getPuntaje() + ").";
+				return "Sesion terminada. Puntaje total: " + puntajeActual + " puntos. No superaste tu record ("
+						+ j.getPuntaje() + ").";
 			}
 		}
 		jugadores.add(new Jugador(jugadorActual, puntajeActual));
@@ -413,7 +417,7 @@ public class SistemaImpl implements Sistema {
 	@Override
 	public ArrayList<String> lineasRegistros() {
 		ArrayList<String> lineas = new ArrayList<>();
-		for(Jugador j : jugadores) {
+		for (Jugador j : jugadores) {
 			lineas.add(j.getNombre() + ";" + j.getPuntaje());
 		}
 		return lineas;

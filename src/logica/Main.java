@@ -16,10 +16,11 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("Cargando archivos...");
 
-		leerMonstruos();
-
-		if (sistema.cantidadMonstruos() == 0) {
-			System.out.println("No se ha encontrado el archivo Monstruos.txt o no tiene monstruos validos");
+		boolean valido = leerMonstruos();
+		if (!valido || sistema.cantidadMonstruos() == 0) {
+			if (valido) {
+				System.out.println("No hay monstruos validos, no se puede continuar...");
+			}
 			return;
 		}
 		leerRegistros();
@@ -101,12 +102,12 @@ public class Main {
 	private static void terminarSesion() {
 		String mensaje = sistema.terminarSesion();
 		System.out.println(mensaje);
-		try(FileWriter fw = new FileWriter("Registros.txt")){
-			for(String linea: sistema.lineasRegistros()) {
+		try (FileWriter fw = new FileWriter("Registros.txt")) {
+			for (String linea : sistema.lineasRegistros()) {
 				fw.write(linea + "\n");
 			}
 			System.out.println("Registros guardados en Registros.txt");
-		}catch (IOException e) {
+		} catch (IOException e) {
 			System.out.println("[i] No se pudo guardar en Registros.txt");
 		}
 	}
@@ -114,13 +115,13 @@ public class Main {
 	private static void verRanking() {
 		ArrayList<String> lineas = sistema.ranking();
 		System.out.println("-----RANKING-----");
-		if(lineas.isEmpty()) {
+		if (lineas.isEmpty()) {
 			System.out.println("Aun no hay jugadores registrados.");
 		}
-		for(String linea: lineas) {
+		for (String linea : lineas) {
 			System.out.println(linea);
 		}
-		
+
 	}
 
 	private static void verHistorial() {
@@ -129,10 +130,10 @@ public class Main {
 		if (lineas.size() == 1) {
 			System.out.println("Aun no has jugado ningun minijuego.");
 		}
-		for(String linea : lineas) {
+		for (String linea : lineas) {
 			System.out.println(linea);
 		}
-		
+
 	}
 
 	private static void jugarMinijuego() {
@@ -156,7 +157,7 @@ public class Main {
 			if (opcion == 0) {
 				continue;
 			}
-			
+
 			int estado = sistema.estadoMinijuego(opcion);
 			if (estado == -1) {
 				System.out.println("[!] Opcion fuera de rango");
@@ -166,8 +167,7 @@ public class Main {
 				System.out.println();
 				System.out.println(sistema.nombreMinijuego(opcion) + ": " + sistema.descripcionMinijuego(opcion));
 				elegirMonstruo(opcion);
-	
-				
+
 			}
 		} while (opcion != 0);
 	}
@@ -177,61 +177,61 @@ public class Main {
 		int opcion;
 		do {
 			opcion = -1;
-			
+
 			System.out.println();
 			System.out.println("¿Quieres usar una habilidad?");
-			for(int i=0; i<habilidades.size();i++) {
+			for (int i = 0; i < habilidades.size(); i++) {
 				System.out.println((i + 1) + ") " + habilidades.get(i));
 			}
 			System.out.println("0) No usar habilidad");
 			System.out.print("> ");
-			
+
 			try {
 				opcion = Integer.parseInt(teclado.nextLine());
-			}catch (NumberFormatException e) {
-				 System.out.println("[!] Ingrese un numero");
-		            continue;
+			} catch (NumberFormatException e) {
+				System.out.println("[!] Ingrese un numero");
+				continue;
 			}
-			if(opcion == 0) {
+			if (opcion == 0) {
 				return "Ninguna";
 			}
-			if(opcion<1 || opcion > habilidades.size()) {
+			if (opcion < 1 || opcion > habilidades.size()) {
 				System.out.println("[!] Opcion fuera de rango");
-	            continue;
+				continue;
 			}
-			String elegida = habilidades.get(opcion-1);
+			String elegida = habilidades.get(opcion - 1);
 			System.out.println(sistema.usarHabilidades(monstruo, elegida));
 			return elegida;
-		}while(true);
+		} while (true);
 	}
 
 	private static void elegirMonstruo(int minijuego) {
 		ArrayList<String> lista = sistema.monstruosDisponibles();
-		if(lista.isEmpty()) {
+		if (lista.isEmpty()) {
 			System.out.println("[!] No quedan monstruos disponibles");
 			return;
 		}
 		int opcion;
 		do {
 			opcion = -1;
-			
+
 			System.out.println();
 			System.out.println("Elige el monstruo en el que te convertiras:");
-			for(int i = 0; i<lista.size();i++) {
-				System.out.println((i+1) + ") " + lista.get(i));
+			for (int i = 0; i < lista.size(); i++) {
+				System.out.println((i + 1) + ") " + lista.get(i));
 			}
 			System.out.println("0) Volver");
 			System.out.print("> ");
 			try {
 				opcion = Integer.parseInt(teclado.nextLine().trim());
-			}catch (NumberFormatException e) {
+			} catch (NumberFormatException e) {
 				System.out.println("[!] Ingrese un numero");
 				continue;
 			}
-			if(opcion == 0) {
+			if (opcion == 0) {
 				return;
 			}
-			if(opcion <1 || opcion > lista.size()) {
+			if (opcion < 1 || opcion > lista.size()) {
 				System.out.println("[!] Opcion fuera de rango");
 				continue;
 			}
@@ -241,8 +241,8 @@ public class Main {
 			System.out.println("Potencial: " + String.format("%.2f", potencial));
 			String habilidad = elegirHabilidad(opcion);
 			int puntaje = sistema.jugar(minijuego, opcion, habilidad);
-			if(!habilidad.equals("Ninguna")) {
-				if(sistema.HabilidadEfectiva()) {
+			if (!habilidad.equals("Ninguna")) {
+				if (sistema.HabilidadEfectiva()) {
 					System.out.println("¡La habilidad fue efectiva! Puntaje x1.5");
 				} else {
 					System.out.println("La habilidad no tuvo efecto en este minijuego.");
@@ -251,7 +251,7 @@ public class Main {
 			System.out.println();
 			System.out.println(">> Puntaje obtenido: " + puntaje + " puntos");
 			return;
-		}while(true);
+		} while (true);
 	}
 
 	private static void verCatalogo() {
@@ -300,7 +300,7 @@ public class Main {
 
 	}
 
-	private static void leerMonstruos() {
+	private static boolean leerMonstruos() {
 		File txtMonstruos = new File("Monstruos.txt");
 		int num = 0;
 		scan = null;// por si el scan apunta a uno cerrado
@@ -322,11 +322,14 @@ public class Main {
 			System.out.println("> " + num + " monstruos cargados desde Monstruos.txt");
 
 		} catch (FileNotFoundException e) {
-			// no existe se parte con lista vacia
+			System.out.println("No se encontrado el archivo, no se puede continuar....");
+			return false;
+
 		} finally {
 			if (scan != null) {
 				scan.close();
 			}
 		}
+		return true;
 	}
 }
